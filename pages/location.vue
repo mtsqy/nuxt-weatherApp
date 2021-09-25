@@ -23,7 +23,6 @@ export default {
 
     methods: {
         iconClicked(val) {
-            console.log(val)
             if(val == 'left') {
                 this.$router.push('/')
             }
@@ -34,7 +33,6 @@ export default {
         if(process.client && window) {
             
             navigator.geolocation.watchPosition((pos) => {
-                console.log('get lastCoord from location page', this.lastCoord)
                 if(this.lastCoord.lon !== pos.coords.longitude
                  && this.lastCoord.lat !== pos.coords.latitude) {
                      this.lastCoord = {

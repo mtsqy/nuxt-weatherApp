@@ -171,8 +171,8 @@ export default {
 
         updateCurrent(val) {
             this.$store.commit("add", val)
-            console.log('update storedLoc')
             this.$router.push('/')
+            console.log('update storedLoc')
         },
 
         _toCelsius(val) {
@@ -222,10 +222,7 @@ export default {
     },
 
     mounted() {
-        console.log(this.lastCoord)
-        if(this.lastCoord) {
-            this.currentCoord = this.lastCoord
-        }
+        if(this.lastCoord) this.currentCoord = this.lastCoord
     }
 
 }

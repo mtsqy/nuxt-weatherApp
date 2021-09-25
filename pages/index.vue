@@ -53,7 +53,7 @@ export default {
 
   methods: {
     iconClicked(val) {
-      console.log(val)
+  
       if(val == 'left') {
         this.$router.push('/')
       }
@@ -65,7 +65,6 @@ export default {
   },
 
   beforeMount() {
-    console.log('get lastCoord')
     if(!this.loaded && process.client && window) {
 
       navigator.geolocation.watchPosition((pos) => {
