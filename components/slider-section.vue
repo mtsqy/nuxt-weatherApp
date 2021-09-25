@@ -88,8 +88,7 @@ export default {
         },
 
         directTo(val, data) {
-            this.$router.push({path: val, query: {data}});
-
+            this.$router.push({path: val, query: {data}})
         },
 
         toFahrenheit(val) {

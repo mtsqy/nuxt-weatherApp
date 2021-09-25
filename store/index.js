@@ -3,8 +3,11 @@ export const state = () => ({
         lon: 0,
         lat: 0
     },
-    current: {},
-    storedLoc: []
+    current: {
+        name: 'test'
+    },
+    storedLoc: [],
+    menuOpen: false
 })
 
 export const mutations = {

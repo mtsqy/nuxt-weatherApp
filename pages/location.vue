@@ -9,6 +9,7 @@
 export default {
     data() {
         return {
+            current: {},
             lastCoord: {
                 lat: 0,
                 lon: 0
@@ -27,6 +28,11 @@ export default {
                 this.$router.push('/')
             }
         }
+    },
+
+    created() {
+        console.log(this.$route.query)
+        this.current = this.$route.query.data[0]
     },
 
     beforeMount() {

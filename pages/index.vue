@@ -48,6 +48,12 @@ export default {
     },
     storedLoc(val) {
       this.sliderData = val
+    },
+    current(val) {
+      this.$store.commit("setState", {
+        type: 'current',
+        data: val
+      })
     }
   },
 
@@ -55,7 +61,10 @@ export default {
     iconClicked(val) {
   
       if(val == 'left') {
-        this.$router.push('/')
+        this.$store.commit("setState", {
+          type: 'menuOpen',
+          data: true
+        })
       }
     },
 
