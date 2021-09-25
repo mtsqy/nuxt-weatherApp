@@ -1,4 +1,12 @@
 const geoMixin = {
+    data() {
+        return {
+            lastCoord: {
+                lat: 0,
+                lon: 0
+              },
+        }
+    },
     beforeMount() {
         if(process.client && window) {
 

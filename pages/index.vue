@@ -1,35 +1,34 @@
 <template>
   <article>
-    <header-section :key="current" :data="headerData" @iconClicked="iconClicked($event)" />
-    <slider-section :key="storedLoc[0]" :data="storedLoc" />
+    <header-section :key="headerData.name" :data="headerData" @iconClicked="iconClicked($event)" />
+    <slider-section v-if="sliderData" :key="sliderData.length" :data="sliderData" />
     <cardlist-section />
   </article>
 </template>
 
 <script>
-import geoMixin from "@/mixins/geo"
+
 import { mapState } from "vuex"
 export default {
-  mixins: [geoMixin],
   data() {
     return {
+      loaded: false,
       current: null,
       lastCoord: {
         lat: 0,
         lon: 0
       },
+      sliderData: [],
     }
   },
 
   computed: {
     ...mapState(["coord", "storedLoc"]),
     headerData() {
-      if(this.current) {
-        return {
-          title: this.current.name,
-          leftIcon: '/assets/icons/double-strip.svg',
-          rightIcon: '/assets/icons/cogwheel.svg'
-        }
+      return {
+        title: this.current?.name || 'Home',
+        leftIcon: '/assets/icons/double-strip.svg',
+        rightIcon: '/assets/icons/cogwheel.svg'
       }
     }
   },
@@ -46,6 +45,9 @@ export default {
           })
         }
       })
+    },
+    storedLoc(val) {
+      this.sliderData = val
     }
   },
 
@@ -55,10 +57,32 @@ export default {
       if(val == 'left') {
         this.$router.push('/')
       }
+    },
+
+  getSliderData() {
+      return this.storedLoc
     }
   },
 
-  async mounted() {
+  beforeMount() {
+    console.log('get lastCoord')
+    if(!this.loaded && process.client && window) {
+
+      navigator.geolocation.watchPosition((pos) => {
+          if(this.lastCoord.lon !== pos.coords.longitude
+          && this.lastCoord.lat !== pos.coords.latitude) {
+            this.lastCoord = {
+                lon: pos.coords.longitude,
+                lat: pos.coords.latitude
+            }
+        }
+        this.loaded = true
+      })
+    }
+  },
+
+  mounted() {
+    this.sliderData = this.storedLoc
     console.log(this.storedLoc)
   }
 }

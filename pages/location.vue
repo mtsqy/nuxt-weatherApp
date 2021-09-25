@@ -1,7 +1,7 @@
 <template>
   <article>
     <header-section :data="headerData" @iconClicked="iconClicked($event)" />
-    <maps-section/>
+    <maps-section :key="lastCoord.lat" :lastCoord="lastCoord" />
   </article>
 </template>
 
@@ -9,6 +9,11 @@
 export default {
     data() {
         return {
+            lastCoord: {
+                lat: 0,
+                lon: 0
+            },
+
             headerData: {
                 title:'Change Location',
                 leftIcon: '/assets/icons/left-arrow-dark.svg'
@@ -22,6 +27,22 @@ export default {
             if(val == 'left') {
                 this.$router.push('/')
             }
+        }
+    },
+
+    beforeMount() {
+        if(process.client && window) {
+            
+            navigator.geolocation.watchPosition((pos) => {
+                console.log('get lastCoord from location page', this.lastCoord)
+                if(this.lastCoord.lon !== pos.coords.longitude
+                 && this.lastCoord.lat !== pos.coords.latitude) {
+                     this.lastCoord = {
+                         lon: pos.coords.longitude,
+                         lat: pos.coords.latitude
+                     }
+                 }
+            })
         }
     }
 }

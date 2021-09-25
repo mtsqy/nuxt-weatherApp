@@ -1,6 +1,6 @@
 <template>
-  <section>
-      <div class="slides" ref="slider">
+  <section v-if="data">
+      <div class="slides hidden" ref="slider">
         <div class="slide" 
         v-for="(s, index) in data" 
         @click="directTo('details', data)"
@@ -84,6 +84,7 @@ export default {
                 friction: 0.08,
                 wrapAround: false
             })
+            if(el.classList.contains('hidden')) el.classList.remove('hidden')
         },
 
         directTo(val, data) {
@@ -101,9 +102,8 @@ export default {
     },
 
     mounted() {
-        setTimeout(() => {
-            this._initSlider(this.$refs?.slider).toFixed(2)
-        }, 650)
+        console.log('slider mounted')
+        if(this.$el) this._initSlider(this.$refs?.slider)
     }
 }
 </script>
@@ -111,6 +111,7 @@ export default {
 <style lang="scss" scoped>
 section {
     padding-top: 75px;
+    opacity: 1;
 }
 
 .slide {
@@ -214,5 +215,9 @@ section {
     p {
         padding: 0;
     }
+}
+
+.hidden {
+    opacity: 0;
 }
 </style>

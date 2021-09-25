@@ -15,7 +15,7 @@
             />
         </span>
       </div>
-      <div class="container__maps">
+      <div :key="lastCoord.lat" class="container__maps">
         <div id="g-maps" />
         <ul class="list__city" v-if="searchText">
             <li 
@@ -60,17 +60,33 @@
 </template>
 
 <script>
-import geoMixin from "@/mixins/geo"
 import { mapState } from "vuex"
 import { kelvinToCelsius, mpsToMph } from '@/plugins/utils'
 import cityList from "@/static/assets/json/city.list.json"
 export default {
-    mixins: [geoMixin],
+
+    props: {
+        lastCoord: {
+            type: Object,
+            default: function() {
+                return {
+                    // lat: 0,
+                    // lon: 0
+                }
+            }
+        }
+    },
+
     data() {
         // limit request time in millisecond
         let limitTime = 5000
         let firstCache = limitTime + 500
         return {
+            currentCoord: {
+                lat: 0,
+                lon: 0
+            },
+
             map: null,
             marker: null,
             limitTime,
@@ -80,36 +96,33 @@ export default {
             filteredList: [],
             current: null,
             weatherData: null,
-            lastCoord: {
-                lat: null,
-                lon: null
-            },
             icons: {
-                beachMarker: 'https://developers.google.com/maps/documentation/javascript/examples/full/images/beachflag.png'
+                beachMarker: 'https://developers.google.com/maps/documentation/javascript/examples/full/images/beachflag.png',
+                circlePin: '/assets/icons/circle-pin.svg'
             },
         }
     },
 
     methods: {
         initMaps(coord) {
-            // if(process.client && window) {
-            //     this.map = new google.maps.Map(document.getElementById("g-maps"), {
-            //         zoom: 12,
-            //         center: { lat: coord.lat, lng: coord.lon },
-            //     })
-            //     this.placeMarker(coord)
-            // }
+            if(process.client && window) {
+                this.map = new google.maps.Map(document.getElementById("g-maps"), {
+                    zoom: 12,
+                    center: { lat: coord.lat, lng: coord.lon },
+                })
+                this.placeMarker(coord)
+            }
         },
 
         placeMarker(coord) {
-            // this.marker = new google.maps.Marker({
-            //     position: { 
-            //         lat: coord.lat, 
-            //         lng: coord.lon 
-            //     },
-            //     map : this.map,
-            //     // icon: this.icons.beachMarker,
-            // })
+            this.marker = new google.maps.Marker({
+                position: { 
+                    lat: coord.lat, 
+                    lng: coord.lon 
+                },
+                map : this.map,
+                // icon: this.icons.beachMarker,
+            })
         },
 
         wordSuggestion(searchText) {
@@ -158,7 +171,8 @@ export default {
 
         updateCurrent(val) {
             this.$store.commit("add", val)
-            // this.$router.push('/')
+            console.log('update storedLoc')
+            this.$router.push('/')
         },
 
         _toCelsius(val) {
@@ -184,6 +198,20 @@ export default {
         },
         
         lastCoord(val) {
+            this.currentCoord = val
+            this.$openWeather(val).then(res => {
+                this.current = res
+                if(this.storedLoc.length < 1) this.$store.commit("add", res)
+                else {
+                    this.$store.commit("add", {
+                        index: 0,
+                        item: res
+                    })
+                }
+            })
+        },
+
+        currentCoord(val) {
             this.changeLocation(val)
         },
 
@@ -192,6 +220,14 @@ export default {
             this.wordSuggestion(val)
         }
     },
+
+    mounted() {
+        console.log(this.lastCoord)
+        if(this.lastCoord) {
+            this.currentCoord = this.lastCoord
+        }
+    }
+
 }
 </script>
 
