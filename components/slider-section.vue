@@ -2,9 +2,9 @@
   <section v-if="data">
       <div class="slides hidden" ref="slider">
         <div class="slide" 
-        v-for="(s, index) in data" 
-        @click="directTo('details', data)"
-        :key="index">
+        v-for="s in data" 
+        @click="directTo(`details/${s.name}`, s)"
+        :key="s.name">
           <div class="slide__weather">
             <div class="slide__txt">
               <p>Chance of rain {{s.main.humidity}}%</p>
@@ -44,7 +44,7 @@
             </span>
           </div>
         </div>
-        <div class="slide" v-if="data.length > 0" @click="directTo('location')">
+        <div class="slide" v-if="data.length > 0" @click="directTo('location', 'add', '')">
             <div class="circle">
                 <h6>+</h6>
                 <p>Add new card</p>
@@ -62,6 +62,7 @@ export default {
             flkty: null,
         }
     },
+
     props: {
         data: {
             type: Array,
@@ -84,11 +85,11 @@ export default {
                 friction: 0.08,
                 wrapAround: false
             })
-            if(el.classList.contains('hidden')) el.classList.remove('hidden')
+            el.classList.remove('hidden')
         },
 
-        directTo(val, data) {
-            this.$router.push({path: val, query: {data}})
+        directTo(val, data, i) {
+            this.$router.push({path: val, query: {data, i}})
         },
 
         toFahrenheit(val) {
@@ -101,8 +102,9 @@ export default {
     },
 
     mounted() {
-        console.log('slider mounted')
-        if(this.$el) this._initSlider(this.$refs?.slider)
+        setTimeout(() => {
+            if(this.$el) this._initSlider(this.$refs?.slider)
+        }, 200);
     }
 }
 </script>

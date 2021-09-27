@@ -46,7 +46,7 @@
                     <img src="/assets/icons/sun-dark.svg" alt="">
                 </span>
                 <span class="box--txt">
-                    <p class="txt-dark">{{current.clouds.all/100}}</p>
+                    <p class="txt-dark">{{(current.clouds.all/100).toFixed(1)}}</p>
                     <h6>UV Index</h6>
                 </span>
             </div>
@@ -77,22 +77,27 @@ import { kelvinToFahrenheit, mpsToMph } from '@/plugins/utils'
 export default {
     data() {
         return {
+            index: 0,
             current: null,
             currentTemp: 0,
-            headerData: {
-                title:'Current',
+        }
+    },
+
+    computed: {
+        ...mapState(['storedLoc']),
+        headerData() {
+            return {
+                title: this.current.name,
                 leftIcon: '/assets/icons/left-arrow-bright.svg',
                 rightIcon: '/assets/icons/three-dots.svg'
             }
         }
     },
 
-    computed: {
-        ...mapState([''])
-    },
-
     created() {
-        this.current = this.$route.query.data[0]
+        console.log(this.$route.query.data)
+        this.current = this.$route.query.data
+        console.log(this.current)
     },
 
     methods: {

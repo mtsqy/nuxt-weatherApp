@@ -16,7 +16,7 @@
               <span class="icon">
                   <img src="/assets/icons/pin-bright.svg" alt="">
               </span>
-              <p @click="updatedLocation(index, 'update')">{{data.name}}</p>
+              <p @click="updatedLocation(index, 'change')">{{data.name}}</p>
           </li>
       </ul>
       <div class="block">
@@ -58,9 +58,14 @@ export default {
         }
     },
 
+    watch: {
+        current(val) {
+            this.currentData = val
+        }
+    },
+
     mounted() {
         this.locationData = this.storedLoc
-        this.currentData = this.current
     }
 }
 </script>
@@ -77,6 +82,7 @@ section {
 }
 
 li {
+    cursor: pointer;
     display: flex;
     align-items: center;
     padding: 8px 0;
@@ -90,6 +96,7 @@ li {
 .block {
     padding: 28px 8px;
     p {
+        cursor: pointer;
         padding: 8px 0;
     }
 }

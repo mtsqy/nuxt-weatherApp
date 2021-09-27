@@ -26,34 +26,34 @@
             </li>
         </ul>
       </div>
-      <div class="container__info box" :key="current.name" v-if="current && !searchText">
+      <div class="container__info box" :key="currentLoc.name" v-if="currentLoc && !searchText">
           <div class="box__inner">
               <div class="inner">
                 <span class="inner--icon"></span>
                 <span class="inner--txt">
-                    <h5>{{current.name}}</h5>
-                    <h6>{{current.sys.country}}</h6>
+                    <h5>{{currentLoc.name}}</h5>
+                    <h6>{{currentLoc.sys.country}}</h6>
                 </span>
               </div>
               <div class="inner">
                 <span class="inner--icon">
-                    <img id="wicon" :src="`http://openweathermap.org/img/w/${current.weather[0].icon}.png`" alt="Weather icon">
+                    <img id="wicon" :src="`http://openweathermap.org/img/w/${currentLoc.weather[0].icon}.png`" alt="Weather icon">
                 </span>
-                <h4 class="h-light">{{_toCelsius(current.main.temp)}}</h4>
+                <h4 class="h-light">{{_toCelsius(currentLoc.main.temp)}}</h4>
               </div>
           </div>
           <div class="box__inner">
             <span class="inner--txt">
                 <h6>Longitude and latitude</h6>
-                <p>{{current.coord.lat}}, {{current.coord.lon}}</p>
+                <p>{{currentLoc.coord.lat}}, {{currentLoc.coord.lon}}</p>
             </span>
             <span class="inner--txt">
                 <h6>Wind</h6>
-                <p>{{_toMph(current.wind.speed)}} mp/h</p>
+                <p>{{_toMph(currentLoc.wind.speed)}} mp/h</p>
             </span>
           </div>
-          <div class="box__inner">
-              <button class="cta" @click="updateCurrent(current)">Change Location</button>
+          <div :key="mode.data" class="box__inner">
+              <button class="cta" @click="updateCurrent(currentLoc)">{{mode.data}} Location</button>
           </div>
       </div>
   </section>
@@ -69,10 +69,7 @@ export default {
         lastCoord: {
             type: Object,
             default: function() {
-                return {
-                    // lat: 0,
-                    // lon: 0
-                }
+                return {}
             }
         }
     },
@@ -86,7 +83,10 @@ export default {
                 lat: 0,
                 lon: 0
             },
-
+            mode: {
+                data: 'add',
+                i: -1
+            },
             map: null,
             marker: null,
             limitTime,
@@ -94,7 +94,7 @@ export default {
             disabled: false,
             searchText: '',
             filteredList: [],
-            current: null,
+            currentLoc: null,
             weatherData: null,
             icons: {
                 beachMarker: 'https://developers.google.com/maps/documentation/javascript/examples/full/images/beachflag.png',
@@ -170,7 +170,13 @@ export default {
         },
 
         updateCurrent(val) {
-            this.$store.commit("add", val)
+            if(this.mode.data == 'add') this.$store.commit("add", val)
+            if(this.mode.data == 'change') {
+                this.$store.commit("update", {
+                    index: this.mode.i,
+                    item: val
+                })
+            }
             this.$router.push('/')
             console.log('update storedLoc')
         },
@@ -185,7 +191,7 @@ export default {
     },
 
     computed: {
-        ...mapState(["coord", "storedLoc"])
+        ...mapState(["coord", "storedLoc", "current"])
     },
 
     watch: {
@@ -193,21 +199,7 @@ export default {
         coord(coord) {
             this.$openWeather(coord).then(res => {
                 this.initMaps(coord)
-                this.current = res
-            })
-        },
-        
-        lastCoord(val) {
-            this.currentCoord = val
-            this.$openWeather(val).then(res => {
-                this.current = res
-                if(this.storedLoc.length < 1) this.$store.commit("add", res)
-                else {
-                    this.$store.commit("add", {
-                        index: 0,
-                        item: res
-                    })
-                }
+                this.currentLoc = res
             })
         },
 
@@ -218,11 +210,17 @@ export default {
         searchText(val) {
             if(typeof val !== 'string') return
             this.wordSuggestion(val)
+        },
+
+        mode(val) {
+            this.currentLoc = this.storedLoc[val.i]
+            // this.currentCoord = this.storedLoc[val.i]
+            console.log(this.currentLoc, val)
         }
     },
 
-    mounted() {
-        if(this.lastCoord) this.currentCoord = this.lastCoord
+    created() {
+        this.mode = this.$route.query
     }
 
 }

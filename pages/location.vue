@@ -1,7 +1,7 @@
 <template>
   <article>
     <header-section :data="headerData" @iconClicked="iconClicked($event)" />
-    <maps-section :key="lastCoord.lat" :lastCoord="lastCoord" />
+    <maps-section />
   </article>
 </template>
 
@@ -9,7 +9,6 @@
 export default {
     data() {
         return {
-            current: {},
             lastCoord: {
                 lat: 0,
                 lon: 0
@@ -27,28 +26,9 @@ export default {
             if(val == 'left') {
                 this.$router.push('/')
             }
-        }
+        },
     },
 
-    created() {
-        console.log(this.$route.query)
-        this.current = this.$route.query.data[0]
-    },
-
-    beforeMount() {
-        if(process.client && window) {
-            
-            navigator.geolocation.watchPosition((pos) => {
-                if(this.lastCoord.lon !== pos.coords.longitude
-                 && this.lastCoord.lat !== pos.coords.latitude) {
-                     this.lastCoord = {
-                         lon: pos.coords.longitude,
-                         lat: pos.coords.latitude
-                     }
-                 }
-            })
-        }
-    }
 }
 </script>
 

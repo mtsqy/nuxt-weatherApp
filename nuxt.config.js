@@ -1,11 +1,17 @@
+import data from './static/assets/json/city.list.json'
+let routes = () => {
+  return new Promise(resolve => {
+    resolve(data.map(c => `${c.name}`))
+  })
+}
 export default {
   // Disable server-side rendering: https://go.nuxtjs.dev/ssr-mode
-  ssr: true,
-  target: 'server',
-  server: {
-    port: 3000, // default: 3000
-    host: "0.0.0.0" // default: localhost
-  },
+  ssr: false,
+  target: 'static',
+  // server: {
+  //   port: 3000, // default: 3000
+  //   host: "0.0.0.0" // default: localhost
+  // },
 
   // Global page headers: https://go.nuxtjs.dev/config-head
   head: {
@@ -64,9 +70,14 @@ export default {
     apiURL: process.env.API_URL,
     token: process.env.WEATHER_TOKEN,
   },
+  
   privateRuntimeConfig: {
-    token: process.env.WEATHER_TOKEN,
-},
+      token: process.env.WEATHER_TOKEN,
+  },
+
+  generate: {
+    routes
+  },
 
   // Build Configuration: https://go.nuxtjs.dev/config-build
   build: {
