@@ -1,13 +1,13 @@
 import data from './static/assets/json/city.list.json'
 let routes = () => {
   return new Promise(resolve => {
-    resolve(data.map(c => `${c.name}`))
+    resolve(data.map(c => `/details/${c.name.split(" ").toString()}`))
   })
 }
 export default {
   // Disable server-side rendering: https://go.nuxtjs.dev/ssr-mode
-  ssr: true,
-  target: 'server',
+  ssr: false,
+  target: 'static',
   // server: {
   //   port: 3000, // default: 3000
   //   host: "0.0.0.0" // default: localhost
