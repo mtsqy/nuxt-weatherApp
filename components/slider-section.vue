@@ -3,7 +3,7 @@
       <div class="slides hidden" ref="slider">
         <div class="slide" 
         v-for="s in data" 
-        @click="directTo(`details/${s.name}`, s)"
+        @click="directTo(`details`, s)"
         :key="s.name">
           <div class="slide__weather">
             <div class="slide__txt">

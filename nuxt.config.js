@@ -1,9 +1,4 @@
 import data from './static/assets/json/city.list.json'
-let routes = () => {
-  return new Promise(resolve => {
-    resolve(data.map(c => `/details/${c.name.split(" ").toString()}`))
-  })
-}
 export default {
   // Disable server-side rendering: https://go.nuxtjs.dev/ssr-mode
   ssr: false,
@@ -76,7 +71,7 @@ export default {
   },
 
   generate: {
-    routes
+    routes: ['/', '/details', '/location']
   },
 
   // Build Configuration: https://go.nuxtjs.dev/config-build
