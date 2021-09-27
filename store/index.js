@@ -4,7 +4,7 @@ export const state = () => ({
         lat: 0
     },
     current: {
-        name: 'initial'
+        name: 'Getting Location..'
     },
     storedLoc: [],
     menuOpen: false
