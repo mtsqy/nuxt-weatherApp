@@ -1,4 +1,4 @@
-import data from './static/assets/json/city.list.json'
+
 export default {
   // Disable server-side rendering: https://go.nuxtjs.dev/ssr-mode
   ssr: false,
@@ -33,7 +33,7 @@ export default {
         defer: true
       },
       {
-        src: "https://maps.googleapis.com/maps/api/js?key=" + process.env.MAP_API,
+        src: "https://maps.googleapis.com/maps/api/js?key="+process.env.MAP_API+"&map_ids="+process.env.MAP_ID,
         async: true
       }
     ]
